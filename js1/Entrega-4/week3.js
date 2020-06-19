@@ -58,14 +58,14 @@ axios.get(URLTotal)
 
     });
 
-async function NameMessagesForUser() {
+/* async function NameMessagesForUser() {
     axios.get(URLTotal)
         .then(response => {
             const posts = response.data
             for (let post of posts) {
                 const respuesta = await axios.get(`${URLPost}${post.id}`);
                 console.log(respuesta)
-                /*               detailedPost = {}
+                              detailedPost = {}
                
                                if (users[detailedPost.userId] === undefined) {
                                    users[detailedPost.userId] = {
@@ -84,10 +84,10 @@ async function NameMessagesForUser() {
                                    });
                                }
                                return detailedPost
-                               */
+                              
             }
         })
-    }
+    } */
 
 console.log(detailedPost)
 console.log(response)
