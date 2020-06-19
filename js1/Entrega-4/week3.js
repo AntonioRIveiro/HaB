@@ -20,74 +20,67 @@
 
 ]
 */
-function messagesForUser(messages) {
-    let contador = {};
 
-    for (let message of messages) {
-        if (contador[message.userId] != undefined) {
-            contador[message.userId]++
-        } else (
-            contador[message.userId] = 1
-        )
-    }
-    return contador;
+const axios = require("axios");
+
+let idInterval;
+
+async function dataFrom() {
+  const dataSource = "https://jsonplaceholder.typicode.com/posts";
+
+  const Id = (data) => data.id;
+  const infoFromURL = (id) => axios.get(`${dataSource}/${id}`);
+  let calls = await axios.get(dataSource);
+
+  calls = calls.data.map(Id).map(infoFromURL);
+
+  const accessToForum = await Promise.all(calls);
+
+  return accessToForum;
 }
-/*
-function NameMessagesForUser(messages) {
-    let contador = {};
 
-    for (let user of users) {
-        userPromises.push(axios.get(`${URLPost}${user.id}`));
-    } else (
-            contador[message.id] = 1
-        )
+function nameMessagesForUser(informacion) {
+  let userMessage = {};
+  const countuserMessage = (message) => {
+    if (userMessage[`Usuario ${message.data.userId}`] == undefined) {
+      userMessage[`Usuario ${message.data.userId}`] = 1;
+    } else {
+      userMessage[`Usuario ${message.data.userId}`]++;
     }
-    return contador;
+  };
+  informacion.forEach(countuserMessage);
+  return userMessage;
 }
-*/
-const axios = require('axios');
 
-const URLTotal = 'https://jsonplaceholder.typicode.com/posts';
-const URLPost = 'https://jsonplaceholder.typicode.com/posts/';
+function listUserMessage(messages) {
+  let userMessage = [];
+  let userDetected = [];
+  for (let message of messages) {
+    if (userDetected.indexOf(message.data.userId) === -1) {
+      userDetected.push(message.data.userId);
+      userMessage.push({
+        userId: message.data.userId,
+        post: [
+          {
+            title: message.data.title,
+            body: message.data.body,
+          },
+        ],
+      });
+    } else {
+      userMessage[userDetected.indexOf(message.data.userId)]["post"].push({
+        title: message.data.title,
+        body: message.data.body,
+      });
+    }
+  }
 
-axios.get(URLTotal)
-    .then(data => {
-        //console.log(data.data)
-        const counterMessagesForUser = messagesForUser(data.data);
-        console.log('el numero de mensajes por cada usuario es:', counterMessagesForUser)
+  return userMessage;
+}
 
-    });
-
-/* async function NameMessagesForUser() {
-    axios.get(URLTotal)
-        .then(response => {
-            const posts = response.data
-            for (let post of posts) {
-                const respuesta = await axios.get(`${URLPost}${post.id}`);
-                console.log(respuesta)
-                              detailedPost = {}
-               
-                               if (users[detailedPost.userId] === undefined) {
-                                   users[detailedPost.userId] = {
-                                       UserId: detailedPost.userId,
-                                       posts: [
-                                           {
-                                               title: detailedPost.title,
-                                               body: detailedPost.body
-                                           }
-                                       ]
-                                   }
-                               } else {
-                                   users[detailedPost.userId].posts.push({
-                                       title: detailedPost.title,
-                                       body: detailedPost.body
-                                   });
-                               }
-                               return detailedPost
-                              
-            }
-        })
-    } */
-
-console.log(detailedPost)
-console.log(response)
+dataFrom().then((data) => {
+  clearInterval(idInterval);
+  console.log(nameMessagesForUser(data));
+  const test = listUserMessage(data);
+  console.log(Object.values(test));
+});
