@@ -1,1 +1,74 @@
+-- entregable10: Web Concello Vigo
+
+-- usuarios (#id, email, nombre, apellidos, direccion, contrasena)
+-- reservas (#id, dia, hora, tiempo_aproximado, codigo, -id_usuario, -id_encargado_restaurante, -id_grupo)
+-- encargados_restaurantes (#id, email, nombre, apellidos, contrasena, -id_restaurante)
+-- restaurantes (#id, capacidad_maxima, nombre, direccion)
+-- grupos (#id, dni, nombre, apellidos)
+-- usuario_reserva (#(-id_usuario, -id_reserva))
+
+USE entregable10;
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+CREATE TABLE IF NOT EXISTS usuarios (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(50) UNIQUE NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    apellidos VARCHAR(50) NOT NULL,
+    direccion VARCHAR(50) UNIQUE NOT NULL,
+    contrasena VARCHAR(40) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS encargados_restaurantes (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(50) UNIQUE NOT NULL,
+    nombre VARCHAR(50),
+    apellidos VARCHAR(50),
+    contrasena VARCHAR(40) NOT NULL,
+    id_restaurante INT UNSIGNED,
+    FOREIGN KEY (id_restaurante) REFERENCES restaurantes(id)
+);
+
+CREATE TABLE IF NOT EXISTS reservas (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    dia DATETIME NOT NULL,
+    hora TIMESTAMP NOT NULL,    
+    tiempo_aproximado INT UNSIGNED DEFAULT 0,
+    codigo INT UNSIGNED UNIQUE,
+    id_usuario INT UNSIGNED,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
+    id_encargado_restaurante INT UNSIGNED,
+    FOREIGN KEY (id_encargado_restaurante) REFERENCES encargados_restaurantes(id),
+    id_grupo INT UNSIGNED,
+    FOREIGN KEY (id_grupo) REFERENCES grupos(id)
+);
+
+CREATE TABLE IF NOT EXISTS restaurantes (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    capacidad_maxima INT UNSIGNED,
+    nombre VARCHAR(50),
+    direccion VARCHAR(50),
+    id_polideportivo INT UNSIGNED,
+    FOREIGN KEY (id_polideportivo) REFERENCES polideportivos(id)
+);
+
+CREATE TABLE IF NOT EXISTS grupos (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    dni VARCHAR(9),
+    nombre VARCHAR(50),
+    apellidos VARCHAR(50),
+    id_polideportivo INT UNSIGNED,
+    FOREIGN KEY (id_polideportivo) REFERENCES polideportivos(id)
+);
+
+CREATE TABLE IF NOT EXISTS usuario_reserva (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT UNSIGNED,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
+    id_reserva INT UNSIGNED,
+    FOREIGN KEY (id_reserva) REFERENCES reservas(id)
+);
+
+SET FOREIGN_KEY_CHECKS = 1;
 
